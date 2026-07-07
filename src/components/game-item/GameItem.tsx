@@ -32,22 +32,6 @@ export default function GameItem({
 	const token = useAppSelector((state) => state.auth.token);
 	const URL = useAppSelector((state) => state.auth.URL);
 
-	const getImageSrc = (imagePath: string) => {
-		if (!imagePath) return "";
-		if (
-			imagePath.startsWith("http://") ||
-			imagePath.startsWith("https://") ||
-			imagePath.startsWith("data:") ||
-			imagePath.startsWith("/") ||
-			imagePath.includes("/images/")
-		) {
-			return imagePath;
-		}
-
-		const normalizedBaseUrl = URL.endsWith("/") ? URL.slice(0, -1) : URL;
-		return `${normalizedBaseUrl}/images/${imagePath}`;
-	};
-
 	const handleAddToCart = () => {
 		// 1. Update local state immediately (optimistic update)
 		dispatch(addToCartLocal(_id));
@@ -80,7 +64,7 @@ export default function GameItem({
 			<div className="relative">
 				<img
 					className="w-full rounded-t-[15px] rounded-b-[15px] rounded-bl-none"
-					src={getImageSrc(image)}
+					src={URL + "/images/" + image}
 					alt={name}
 				/>
 				{!cartItems[_id] ? (
