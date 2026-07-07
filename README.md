@@ -100,7 +100,7 @@ cd game-hub
 
 ---
 
-![Shopping Cart](/src/assets/mobile-cart.png)
+![Shopping Cart](/src/assets/mobile-cart-min.png)
 
 ---
 
