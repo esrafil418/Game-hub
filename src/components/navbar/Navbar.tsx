@@ -7,23 +7,28 @@ import {
 	ShoppingBag,
 	LogOut,
 } from "lucide-react";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import {
-	StoreContext,
-	type StoreContextType,
-} from "../../context/storeContext";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { logout } from "../../store/slices/authSlice";
+import { selectTotalCartAmount } from "../../store/slices/cartSlice";
 
 interface NavbarProps {
 	setShowLogin: (value: boolean) => void;
 }
 
 export default function Navbar({ setShowLogin }: NavbarProps) {
+	const dispatch = useAppDispatch();
+	const navigate = useNavigate();
+	const location = useLocation();
+
+	// Get data from Redux store
+	const token = useAppSelector((state) => state.auth.token);
+	const totalCartAmount = useAppSelector(selectTotalCartAmount);
+
 	const [menu, setMenu] = useState("home");
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const [isOpen, setIsOpen] = useState(false);
-	const { getTotalCartAmount, token, setToken } =
-		useContext<StoreContextType>(StoreContext);
 
 	const closeMenu = () => setIsOpen(false);
 
@@ -59,13 +64,9 @@ export default function Navbar({ setShowLogin }: NavbarProps) {
 		setIsMenuOpen(false);
 	};
 
-	const navigate = useNavigate();
-	const location = useLocation();
-
 	// Logout handler
 	const handleLogout = () => {
-		localStorage.removeItem("token");
-		setToken("");
+		dispatch(logout()); // Now handles localStorage automatically
 		closeMenu();
 		navigate("/");
 	};
@@ -110,7 +111,7 @@ export default function Navbar({ setShowLogin }: NavbarProps) {
 					<Link to="/cart">
 						<ShoppingCart className="w-5 h-5 cursor-pointer hover:text-red-700 transition" />
 					</Link>
-					{getTotalCartAmount() > 0 && (
+					{totalCartAmount > 0 && (
 						<div className="absolute min-w-2.5 min-h-2.5 bg-sky-300 rounded-md -top-2 -right-2"></div>
 					)}
 				</div>
@@ -154,7 +155,10 @@ export default function Navbar({ setShowLogin }: NavbarProps) {
 						>
 							<button
 								type="button"
-								onClick={() => navigate("/myorders")}
+								onClick={() => {
+									navigate("/myorders");
+									closeMenu();
+								}}
 								className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors duration-200 cursor-pointer text-[#262626] text-sm sm:text-base w-full"
 							>
 								<ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5 text-[#676767]" />

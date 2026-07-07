@@ -1,7 +1,12 @@
-import { useContext } from "react";
 import { assets } from "../../assets/assets";
 import { CircleMinus, CirclePlus } from "lucide-react";
-import { StoreContext } from "../../context/storeContext";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import {
+	addToCartLocal,
+	removeFromCartLocal,
+	addToCartAsync,
+	removeFromCartAsync,
+} from "../../store/slices/cartSlice";
 
 export type GameItemProps = {
 	_id: number;
@@ -20,24 +25,62 @@ export default function GameItem({
 	description,
 	image,
 }: GameItemProps) {
-	const context = useContext(StoreContext);
+	const dispatch = useAppDispatch();
 
-	if (!context) {
-		return <div>Loading...</div>;
-	}
+	// Get data from Redux store
+	const cartItems = useAppSelector((state) => state.cart.items);
+	const token = useAppSelector((state) => state.auth.token);
+	const URL = useAppSelector((state) => state.auth.URL);
 
-	const { cartItems, addToCart, removeFromCart, URL } = context;
+	const getImageSrc = (imagePath: string) => {
+		if (!imagePath) return "";
+		if (
+			imagePath.startsWith("http://") ||
+			imagePath.startsWith("https://") ||
+			imagePath.startsWith("data:") ||
+			imagePath.startsWith("/") ||
+			imagePath.includes("/images/")
+		) {
+			return imagePath;
+		}
+
+		const normalizedBaseUrl = URL.endsWith("/") ? URL.slice(0, -1) : URL;
+		return `${normalizedBaseUrl}/images/${imagePath}`;
+	};
+
+	const handleAddToCart = () => {
+		// 1. Update local state immediately (optimistic update)
+		dispatch(addToCartLocal(_id));
+
+		// 2. If logged in, sync with backend
+		if (token) {
+			dispatch(addToCartAsync({ itemId: _id, token }));
+		}
+	};
+
+	const handleRemoveFromCart = () => {
+		// 1. Update local state immediately (optimistic update)
+		dispatch(removeFromCartLocal(_id));
+
+		// 2. If logged in, sync with backend
+		if (token) {
+			dispatch(removeFromCartAsync({ itemId: _id, token }));
+		}
+	};
+
+	// For debugging
 	console.log(`Item ${_id} - ${name}:`, {
 		_id,
 		cartItems: cartItems[_id],
 		cartItemsObject: cartItems,
 	});
+
 	return (
 		<div className="w-full mx-auto rounded-[15px] shadow-md transition duration-300 animate-[fadeIn_1s] p-2">
 			<div className="relative">
 				<img
 					className="w-full rounded-t-[15px] rounded-b-[15px] rounded-bl-none"
-					src={URL + "/images/" + image}
+					src={getImageSrc(image)}
 					alt={name}
 				/>
 				{!cartItems[_id] ? (
@@ -45,7 +88,7 @@ export default function GameItem({
 						type="button"
 						aria-label={`Add ${name} to cart`}
 						className="absolute bottom-3.5 right-3.5 rounded-full bg-white"
-						onClick={() => addToCart(_id)}
+						onClick={handleAddToCart}
 					>
 						<CirclePlus />
 					</button>
@@ -54,7 +97,7 @@ export default function GameItem({
 						<button
 							type="button"
 							aria-label={`Remove ${name} from cart`}
-							onClick={() => removeFromCart(_id)}
+							onClick={handleRemoveFromCart}
 						>
 							<CircleMinus />
 						</button>
@@ -62,7 +105,7 @@ export default function GameItem({
 						<button
 							type="button"
 							aria-label={`Add another ${name} to cart`}
-							onClick={() => addToCart(_id)}
+							onClick={handleAddToCart}
 						>
 							<CirclePlus />
 						</button>

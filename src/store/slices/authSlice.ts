@@ -1,9 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+const URL = import.meta.env.VITE_API_URL ?? "http://localhost:4000";
+
 const initialState = {
 	token: sessionStorage.getItem("token") || "",
 	isAuthenticated: !!sessionStorage.getItem("token"),
-	URL: URL,
+	URL,
 };
 
 const authSlice = createSlice({

@@ -1,13 +1,15 @@
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { StoreContext } from "../../context/storeContext";
+import { useAppSelector } from "../../store/hooks";
 import axios from "axios";
 
 export default function Verify() {
-	const [searchParams, setSearchParams] = useSearchParams();
+	const [searchParams] = useSearchParams();
 	const success = searchParams.get("success");
 	const orderId = searchParams.get("orderId");
-	const { URL } = useContext(StoreContext);
+
+	// Get URL from Redux store
+	const URL = useAppSelector((state) => state.auth.URL);
 	const navigate = useNavigate();
 
 	const verifyPayment = async () => {
@@ -20,7 +22,8 @@ export default function Verify() {
 				navigate("/myorders");
 				return;
 			}
-		} catch {
+		} catch (error) {
+			console.error("Payment verification error:", error);
 			// fall through to failure navigation
 		}
 		navigate("/");
@@ -28,7 +31,7 @@ export default function Verify() {
 
 	useEffect(() => {
 		verifyPayment();
-	}, []);
+	}, []); // Empty dependency array - runs once on mount
 
 	return (
 		<div className="min-h-[60vh] grid place-items-center">

@@ -30,7 +30,7 @@ export default function ExploreCategory({
 								prev === item.category_name ? "All" : item.category_name,
 							)
 						}
-						className="flex flex-col items-center gap-2 shrink-0 w-24 sm:w-28 md:w-32 lg:w-36 transition-transform duration-200 hover:scale-105"
+						className="mt-3 flex flex-col items-center gap-2 shrink-0 w-24 sm:w-28 md:w-32 lg:w-36 transition-transform duration-200 hover:scale-105"
 					>
 						<div className="w-full aspect-square rounded-full shadow-md hover:shadow-lg transition-shadow duration-200">
 							<img
