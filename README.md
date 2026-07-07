@@ -1,4 +1,4 @@
-# 🎮 Game Hub - Full Stack E-Commerce Platform
+# Game Hub - Full Stack E-Commerce Platform
 
 ![Game Hub Banner](/src/assets/games.png)
 
