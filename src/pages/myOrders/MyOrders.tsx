@@ -1,5 +1,5 @@
-import { useContext, useEffect, useState } from "react";
-import { StoreContext } from "../../context/storeContext";
+import { useEffect, useState } from "react";
+import { useAppSelector } from "../../store/hooks";
 import axios from "axios";
 import { assets } from "../../assets/assets";
 
@@ -17,12 +17,17 @@ type Order = {
 };
 
 export default function MyOrders() {
-	const { URL, token } = useContext(StoreContext);
+	// Get data from Redux store
+	const URL = useAppSelector((state) => state.auth.URL);
+	const token = useAppSelector((state) => state.auth.token);
+
 	const [data, setData] = useState<Order[]>([]);
 	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState<string | null>(null);
 
 	const fetchOrders = async () => {
 		setLoading(true);
+		setError(null);
 		try {
 			const response = await axios.post(
 				URL + "/api/orders/userorders",
@@ -32,6 +37,7 @@ export default function MyOrders() {
 			setData(response.data.data);
 		} catch (error) {
 			console.error("Error fetching orders:", error);
+			setError("Failed to load orders. Please try again.");
 		} finally {
 			setLoading(false);
 		}
@@ -40,11 +46,12 @@ export default function MyOrders() {
 	useEffect(() => {
 		if (token) {
 			fetchOrders();
-			return;
+		} else {
+			setLoading(false);
 		}
-		setLoading(false);
 	}, [token]);
 
+	// Show loading state
 	if (loading) {
 		return (
 			<div className="min-h-[60vh] grid place-items-center">
@@ -53,6 +60,23 @@ export default function MyOrders() {
 		);
 	}
 
+	// Show error state
+	if (error) {
+		return (
+			<div className="min-h-[60vh] flex flex-col items-center justify-center gap-4">
+				<p className="text-red-500 text-lg">{error}</p>
+				<button
+					type="button"
+					onClick={fetchOrders}
+					className="px-6 py-2 bg-teal-300 hover:bg-teal-500 text-white rounded-md transition-colors"
+				>
+					Try Again
+				</button>
+			</div>
+		);
+	}
+
+	// Show empty state
 	if (data.length === 0) {
 		return (
 			<div className="min-h-[60vh] flex flex-col items-center justify-center gap-4">
@@ -87,7 +111,7 @@ export default function MyOrders() {
 						{/* Items List */}
 						<p className="text-[#262626] text-sm sm:text-base">
 							{order.items.map((item, idx) => (
-								<span key={order._id}>
+								<span key={order._id + idx}>
 									{item.name} x {item.quantity}
 									{idx < order.items.length - 1 && ", "}
 								</span>

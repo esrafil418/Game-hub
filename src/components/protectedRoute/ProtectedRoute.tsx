@@ -1,21 +1,14 @@
 import { Navigate } from "react-router-dom";
-import { useContext } from "react";
-import { StoreContext } from "../../context/storeContext";
+import { useAppSelector } from "../../store/hooks";
 
 interface ProtectedRouteProps {
 	children: React.ReactNode;
 }
 
 export default function ProtectedRoute({ children }: ProtectedRouteProps) {
-	const context = useContext(StoreContext);
+	const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
 
-	// Check if token exists or is empty string
-	if (!context || !context.token) {
-		return <Navigate to="/" replace />;
-	}
-
-	// If token is just whitespace, treat as invalid
-	if (context.token.trim() === "") {
+	if (!isAuthenticated) {
 		return <Navigate to="/" replace />;
 	}
 

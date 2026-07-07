@@ -1,14 +1,101 @@
-import { useContext } from "react";
-import { StoreContext } from "../../context/storeContext";
+import { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { fetchGames } from "../../store/slices/gameSlice";
+import {
+	removeFromCartLocal,
+	removeFromCartAsync,
+	selectTotalCartAmount,
+} from "../../store/slices/cartSlice";
 import type { GameItemProps } from "../../components/game-item/GameItem";
 import { X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export default function Cart() {
-	const { cartItems, game_list, removeFromCart, getTotalCartAmount, URL } =
-		useContext(StoreContext);
-
+	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
+
+	// Get data from Redux store
+	const cartItems = useAppSelector((state) => state.cart.items);
+	const game_list = useAppSelector((state) => state.games.list);
+	const gamesStatus = useAppSelector((state) => state.games.status);
+	const token = useAppSelector((state) => state.auth.token);
+	const URL = useAppSelector((state) => state.auth.URL);
+	const totalCartAmount = useAppSelector(selectTotalCartAmount);
+
+	const getImageSrc = (imagePath: string) => {
+		if (!imagePath) return "";
+		if (
+			imagePath.startsWith("http://") ||
+			imagePath.startsWith("https://") ||
+			imagePath.startsWith("data:") ||
+			imagePath.startsWith("/") ||
+			imagePath.includes("/images/")
+		) {
+			return imagePath;
+		}
+
+		const normalizedBaseUrl = URL.endsWith("/") ? URL.slice(0, -1) : URL;
+		return `${normalizedBaseUrl}/images/${imagePath}`;
+	};
+
+	// Fetch games if not loaded
+	useEffect(() => {
+		if (gamesStatus === "idle") {
+			dispatch(fetchGames());
+		}
+	}, [dispatch, gamesStatus]);
+
+	// Handle remove from cart
+	const handleRemoveFromCart = (itemId: number) => {
+		// 1. Update local state immediately
+		dispatch(removeFromCartLocal(itemId));
+
+		// 2. If logged in, sync with backend
+		if (token) {
+			dispatch(removeFromCartAsync({ itemId, token }));
+		}
+	};
+
+	// Calculate delivery fee
+	const deliveryFee = totalCartAmount === 0 ? 0 : 2;
+	const totalWithDelivery =
+		totalCartAmount === 0 ? 0 : totalCartAmount + deliveryFee;
+
+	// Show loading state
+	if (gamesStatus === "loading") {
+		return (
+			<div className="mt-25 px-4 md:px-6 lg:px-8">
+				<p className="text-gray-500">Loading cart...</p>
+			</div>
+		);
+	}
+
+	// Show error state
+	if (gamesStatus === "failed") {
+		return (
+			<div className="mt-25 px-4 md:px-6 lg:px-8">
+				<p className="text-red-500">Error loading cart. Please try again.</p>
+			</div>
+		);
+	}
+
+	// Check if cart is empty
+	const hasItems = Object.values(cartItems).some((quantity) => quantity > 0);
+
+	if (!hasItems) {
+		return (
+			<div className="mt-25 px-4 md:px-6 lg:px-8 text-center">
+				<p className="text-xl text-gray-500">Your cart is empty</p>
+				<button
+					type="button"
+					onClick={() => navigate("/")}
+					className="mt-4 border-none text-white px-6 py-3 rounded-sm cursor-pointer bg-teal-300 hover:bg-teal-500 transition-all duration-200"
+				>
+					Continue Shopping
+				</button>
+			</div>
+		);
+	}
 
 	return (
 		<div className="mt-25 px-4 md:px-6 lg:px-8">
@@ -34,7 +121,7 @@ export default function Cart() {
 							>
 								{/* Image */}
 								<img
-									src={URL + "/images/" + item.image}
+									src={getImageSrc(item.image)}
 									alt={item.name}
 									className="w-16 h-16 object-cover rounded col-span-1 self-center"
 								/>
@@ -63,7 +150,7 @@ export default function Cart() {
 								<button
 									type="button"
 									aria-label={`Remove ${item.name} from cart`}
-									onClick={() => removeFromCart(item._id)}
+									onClick={() => handleRemoveFromCart(item._id)}
 									className="justify-self-end md:justify-self-center self-start md:self-center cursor-pointer border-none bg-transparent p-0"
 								>
 									<X aria-hidden="true" />
@@ -79,19 +166,17 @@ export default function Cart() {
 					<div>
 						<div className="flex justify-between text-gray-600">
 							<p>Subtotal</p>
-							<p>${getTotalCartAmount()}</p>
+							<p>${totalCartAmount}</p>
 						</div>
 						<hr className="my-2.5" />
 						<div className="flex justify-between text-gray-600">
 							<p>Delivery Fee</p>
-							<p>${getTotalCartAmount() === 0 ? 0 : 2}</p>
+							<p>${deliveryFee}</p>
 						</div>
 						<hr className="my-2.5" />
 						<div className="flex justify-between text-gray-600">
 							<p className="font-bold">Total</p>
-							<p>
-								${getTotalCartAmount() === 0 ? 0 : getTotalCartAmount() + 2}
-							</p>
+							<p>${totalWithDelivery}</p>
 						</div>
 					</div>
 					<button

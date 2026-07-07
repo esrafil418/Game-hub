@@ -1,8 +1,7 @@
-import { useContext, useEffect, useState } from "react";
-import {
-	StoreContext,
-	type StoreContextType,
-} from "../../context/storeContext";
+import { useEffect, useState } from "react";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { selectTotalCartAmount } from "../../store/slices/cartSlice";
+import { fetchGames } from "../../store/slices/gameSlice";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -19,8 +18,16 @@ type Data = {
 };
 
 export default function PlaceOrder() {
-	const { getTotalCartAmount, token, game_list, cartItems, URL } =
-		useContext<StoreContextType>(StoreContext);
+	const dispatch = useAppDispatch();
+	const navigate = useNavigate();
+
+	// Get data from Redux store
+	const token = useAppSelector((state) => state.auth.token);
+	const URL = useAppSelector((state) => state.auth.URL);
+	const game_list = useAppSelector((state) => state.games.list);
+	const gamesStatus = useAppSelector((state) => state.games.status);
+	const cartItems = useAppSelector((state) => state.cart.items);
+	const totalCartAmount = useAppSelector(selectTotalCartAmount);
 
 	const [data, setData] = useState<Data>({
 		firstName: "",
@@ -47,30 +54,30 @@ export default function PlaceOrder() {
 		if (submitting) return;
 		setSubmitting(true);
 		try {
-			let orderItems: Array<{
+			const orderItems: Array<{
 				_id: string | number;
 				quantity: number;
-				[key: string]: any;
+				[key: string]: string | number | boolean | undefined;
 			}> = [];
 			game_list.forEach((item) => {
 				if (cartItems[item._id] > 0) {
-					let itemInfo = { ...item, quantity: cartItems[item._id] };
+					const itemInfo = { ...item, quantity: cartItems[item._id] };
 					orderItems.push(itemInfo);
 				}
 			});
-			let orderData = {
+			const orderData = {
 				address: data,
 				items: orderItems,
-				amount: getTotalCartAmount() + 2,
+				amount: totalCartAmount + 2,
 			};
-			let response = await axios.post(URL + "/api/order/place", orderData, {
+			const response = await axios.post(URL + "/api/order/place", orderData, {
 				headers: { token },
 			});
 			if (response.data.success) {
 				const { session_url } = response.data;
 				window.location.replace(session_url);
 			} else {
-				alert("Error");
+				alert("Error placing order. Please try again.");
 			}
 		} catch {
 			alert("Unable to place order. Please try again.");
@@ -78,14 +85,22 @@ export default function PlaceOrder() {
 			setSubmitting(false);
 		}
 	};
-	const navigate = useNavigate();
 
+	// Load games if not loaded
+	useEffect(() => {
+		if (gamesStatus === "idle") {
+			dispatch(fetchGames());
+		}
+	}, [dispatch, gamesStatus]);
+
+	// Check if games are loaded
 	useEffect(() => {
 		if (game_list.length > 0) {
 			setIsStoreLoaded(true);
 		}
 	}, [game_list]);
 
+	// Redirect if not authenticated or cart is empty
 	useEffect(() => {
 		if (!isStoreLoaded) {
 			return;
@@ -93,10 +108,30 @@ export default function PlaceOrder() {
 
 		if (!token) {
 			navigate("/cart");
-		} else if (getTotalCartAmount() === 0) {
+		} else if (totalCartAmount === 0) {
 			navigate("/cart");
 		}
-	}, [token, isStoreLoaded, getTotalCartAmount, navigate]);
+	}, [token, isStoreLoaded, totalCartAmount, navigate]);
+
+	// Show loading while games load
+	if (gamesStatus === "loading") {
+		return (
+			<div className="min-h-[60vh] grid place-items-center">
+				<div className="w-12 h-12 border-4 border-turquoise border-t-transparent rounded-full animate-spin"></div>
+			</div>
+		);
+	}
+
+	// Show error if games failed to load
+	if (gamesStatus === "failed") {
+		return (
+			<div className="min-h-[60vh] flex flex-col items-center justify-center gap-4">
+				<p className="text-red-500 text-lg">
+					Failed to load game data. Please refresh the page.
+				</p>
+			</div>
+		);
+	}
 
 	return (
 		<form
@@ -227,25 +262,23 @@ export default function PlaceOrder() {
 						<div>
 							<div className="flex justify-between text-gray-600">
 								<p>Subtotal</p>
-								<p>${getTotalCartAmount()}</p>
+								<p>${totalCartAmount}</p>
 							</div>
 							<hr className="my-2.5" />
 							<div className="flex justify-between text-gray-600">
 								<p>Delivery Fee</p>
-								<p>${getTotalCartAmount() === 0 ? 0 : 2}</p>
+								<p>${totalCartAmount === 0 ? 0 : 2}</p>
 							</div>
 							<hr className="my-2.5" />
 							<div className="flex justify-between text-gray-600">
 								<p className="font-bold">Total</p>
-								<p>
-									${getTotalCartAmount() === 0 ? 0 : getTotalCartAmount() + 2}
-								</p>
+								<p>${totalCartAmount === 0 ? 0 : totalCartAmount + 2}</p>
 							</div>
 						</div>
 						<button
 							type="submit"
 							disabled={submitting}
-							className="border-none text-white bg-turquoise w-full md:w-full py-3 rounded-sm cursor-pointer bg-teal-300 hover:bg-teal-500 hover:shadow-lg transition-all duration-200"
+							className="border-none text-white bg-turquoise w-full md:w-full py-3 rounded-sm cursor-pointer bg-teal-300 hover:bg-teal-500 hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
 						>
 							{submitting ? "Processing..." : "Proceed to Payment"}
 						</button>

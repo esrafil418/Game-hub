@@ -74,21 +74,30 @@ const StoreContextProvider = ({ children }: StoreContextProviderProps) => {
 	const fetchGameList = async () => {
 		try {
 			const response = await axios.get(URL + "/api/game/list");
-			const mappedGames = response.data.data.map((game: any) => ({
-				_id: game._id,
-				name: game.name,
-				price: game.price,
-				description: game.description,
-				image: game.image,
-				category: game.category,
-			}));
+			const mappedGames = response.data.data.map(
+				(game: {
+					_id: number;
+					name: string;
+					price: number;
+					description: string;
+					image: string;
+					category: string;
+				}) => ({
+					_id: game._id,
+					name: game.name,
+					price: game.price,
+					description: game.description,
+					image: game.image,
+					category: game.category,
+				}),
+			);
 			setGameList(mappedGames);
 		} catch (error) {
 			console.error("Failed to fetch games:", error);
 		}
 	};
 
-	const loadCartData = async (token) => {
+	const loadCartData = async (token: string) => {
 		const response = await axios.post(
 			URL + "/api/cart/get",
 			{},

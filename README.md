@@ -62,7 +62,7 @@
 
 ---
 
-![Home Page](/src/assets/tablet.png)
+![Home Page](/src/assets/home-page.png)
 
 ---
 
