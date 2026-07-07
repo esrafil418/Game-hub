@@ -72,11 +72,11 @@ export default function Navbar({ setShowLogin }: NavbarProps) {
 	};
 
 	return (
-		<nav className="py-5 px-4 sm:px-8 flex justify-between items-center relative bg-white">
+		<nav className="py-5 flex justify-between items-center relative bg-white">
 			{/* Logo */}
 			<Link to="/">
-				<div className="font-bold text-2xl sm:text-3xl text-red-700 hover:text-red-800 transition">
-					Game Hub
+				<div className="font-bold text-2xl sm:text-3xl text-blue-300 hover:text-red-800 transition">
+					GH
 				</div>
 			</Link>
 
@@ -122,7 +122,7 @@ export default function Navbar({ setShowLogin }: NavbarProps) {
 						<button
 							type="button"
 							onClick={() => setIsOpen(!isOpen)}
-							className="cursor-pointer bg-transparent border-none p-0 focus:outline-none focus:ring-2 focus:ring-turquoise rounded-full"
+							className="cursor-pointer bg-transparent border-none p-0 rounded-full"
 							aria-label="Toggle user menu"
 							aria-expanded={isOpen ? "true" : "false"}
 						>
