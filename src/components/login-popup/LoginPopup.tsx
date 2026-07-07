@@ -1,6 +1,8 @@
 import { X } from "lucide-react";
-import { useContext, useState } from "react";
-import { StoreContext } from "../../context/storeContext";
+import { useState } from "react";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { setToken } from "../../store/slices/authSlice";
+import { loadCartAsync } from "../../store/slices/cartSlice";
 import axios from "axios";
 
 type LoginPopupProps = {
@@ -14,7 +16,8 @@ type LoginData = {
 };
 
 export default function LoginPopup({ setShowLogin }: LoginPopupProps) {
-	const { URL, setToken } = useContext(StoreContext);
+	const dispatch = useAppDispatch();
+	const URL = useAppSelector((state) => state.auth.URL);
 
 	const [currentState, setCurrentState] = useState("Sign Up");
 
@@ -43,8 +46,13 @@ export default function LoginPopup({ setShowLogin }: LoginPopupProps) {
 			const response = await axios.post(newUrl, data);
 
 			if (response.data.success) {
-				setToken(response.data.token);
-				localStorage.setItem("token", response.data.token);
+				// Save token using Redux
+				dispatch(setToken(response.data.token));
+
+				// Load the user's cart after login
+				await dispatch(loadCartAsync(response.data.token));
+
+				// Close the popup
 				setShowLogin(false);
 			} else {
 				alert(response.data.message);
