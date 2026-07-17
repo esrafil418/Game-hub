@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { fetchGames } from "../../store/slices/gameSlice";
-import { category } from "../../assets/assets";
 import GameItem, { type GameItemProps } from "../game-item/GameItem";
 
 type GamesProps = {
