@@ -30,7 +30,7 @@ export default function GameItem({
 	// Get data from Redux store
 	const cartItems = useAppSelector((state) => state.cart.items);
 	const token = useAppSelector((state) => state.auth.token);
-	const URL = useAppSelector((state) => state.auth.URL);
+	// const URL = useAppSelector((state) => state.auth.URL);
 
 	const handleAddToCart = () => {
 		// 1. Update local state immediately (optimistic update)
