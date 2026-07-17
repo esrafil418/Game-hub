@@ -1,14 +1,14 @@
+import { X } from "lucide-react";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import type { GameItemProps } from "../../components/game-item/GameItem";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
-import { fetchGames } from "../../store/slices/gameSlice";
 import {
-	removeFromCartLocal,
 	removeFromCartAsync,
+	removeFromCartLocal,
 	selectTotalCartAmount,
 } from "../../store/slices/cartSlice";
-import type { GameItemProps } from "../../components/game-item/GameItem";
-import { X } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { fetchGames } from "../../store/slices/gameSlice";
 
 export default function Cart() {
 	const dispatch = useAppDispatch();
@@ -28,14 +28,13 @@ export default function Cart() {
 			imagePath.startsWith("http://") ||
 			imagePath.startsWith("https://") ||
 			imagePath.startsWith("data:") ||
-			imagePath.startsWith("/") ||
-			imagePath.includes("/images/")
+			imagePath.startsWith("/")
 		) {
 			return imagePath;
 		}
 
 		const normalizedBaseUrl = URL.endsWith("/") ? URL.slice(0, -1) : URL;
-		return `${normalizedBaseUrl}/images/${imagePath}`;
+		return `${normalizedBaseUrl}/uploads/${imagePath}`;
 	};
 
 	// Fetch games if not loaded

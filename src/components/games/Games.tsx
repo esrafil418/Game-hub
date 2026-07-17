@@ -10,19 +10,16 @@ type GamesProps = {
 export default function Games({ genre }: GamesProps) {
 	const dispatch = useAppDispatch();
 
-	// Get data from Redux store
 	const game_list = useAppSelector((state) => state.games.list);
 	const gamesStatus = useAppSelector((state) => state.games.status);
 	const gamesError = useAppSelector((state) => state.games.error);
 
-	// Fetch games when component mounts
 	useEffect(() => {
 		if (gamesStatus === "idle") {
 			dispatch(fetchGames());
 		}
 	}, [dispatch, gamesStatus]);
 
-	// Show loading state
 	if (gamesStatus === "loading") {
 		return (
 			<div className="mt-7.5" id="game-display">
@@ -34,7 +31,6 @@ export default function Games({ genre }: GamesProps) {
 		);
 	}
 
-	// Show error state
 	if (gamesStatus === "failed") {
 		return (
 			<div className="mt-7.5" id="game-display">
@@ -46,13 +42,11 @@ export default function Games({ genre }: GamesProps) {
 		);
 	}
 
-	// Filter games by category
 	const filteredGames =
 		genre === "All"
 			? game_list
 			: game_list.filter((item: GameItemProps) => item.category === genre);
 
-	// Show no games message
 	if (!filteredGames || filteredGames.length === 0) {
 		return (
 			<div className="mt-7.5" id="game-display">
@@ -70,16 +64,20 @@ export default function Games({ genre }: GamesProps) {
 				Top Games
 			</h2>
 			<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mt-7.5 gap-7.5 gap-y-12.5">
-				{filteredGames.map((item: GameItemProps) => (
-					<GameItem
-						key={item._id}
-						_id={item._id}
-						name={item.name}
-						price={item.price}
-						description={item.description}
-						image={item.image}
-					/>
-				))}
+				{filteredGames.map((item: GameItemProps) => {
+					const imageUrl = `/uploads/${item.image}`;
+
+					return (
+						<GameItem
+							key={item._id}
+							_id={item._id}
+							name={item.name}
+							price={item.price}
+							description={item.description}
+							image={imageUrl}
+						/>
+					);
+				})}
 			</div>
 		</div>
 	);
