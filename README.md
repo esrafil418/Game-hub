@@ -76,7 +76,7 @@ The application implements a secure authentication system using **JWT (JSON Web 
 
 ## 🛠️ Installation & Setup
 
-### Prerequisites
+### Prerequisites:
 
 - Node.js (v18 or higher)
 - MongoDB (local or Atlas)
