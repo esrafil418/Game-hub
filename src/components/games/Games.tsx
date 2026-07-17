@@ -9,6 +9,7 @@ type GamesProps = {
 
 export default function Games({ genre }: GamesProps) {
 	const dispatch = useAppDispatch();
+	const URL = useAppSelector((state) => state.auth.URL);
 
 	const game_list = useAppSelector((state) => state.games.list);
 	const gamesStatus = useAppSelector((state) => state.games.status);
@@ -65,7 +66,7 @@ export default function Games({ genre }: GamesProps) {
 			</h2>
 			<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mt-7.5 gap-7.5 gap-y-12.5">
 				{filteredGames.map((item: GameItemProps) => {
-					const imageUrl = `/uploads/${item.image}`;
+					const imageUrl = `${URL}/uploads/${item.image}`;
 
 					return (
 						<GameItem
