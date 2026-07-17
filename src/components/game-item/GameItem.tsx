@@ -1,11 +1,11 @@
-import { assets } from "../../assets/assets";
 import { CircleMinus, CirclePlus } from "lucide-react";
+import { assets } from "../../assets/assets";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import {
-	addToCartLocal,
-	removeFromCartLocal,
 	addToCartAsync,
+	addToCartLocal,
 	removeFromCartAsync,
+	removeFromCartLocal,
 } from "../../store/slices/cartSlice";
 
 export type GameItemProps = {
@@ -64,7 +64,7 @@ export default function GameItem({
 			<div className="relative">
 				<img
 					className="w-full rounded-t-[15px] rounded-b-[15px] rounded-bl-none"
-					src={URL + "/images/" + image}
+					src={image}
 					alt={name}
 				/>
 				{!cartItems[_id] ? (
