@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import logo from "../../assets/logo.ico";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { logout } from "../../store/slices/authSlice";
 import { selectTotalCartAmount } from "../../store/slices/cartSlice";
@@ -76,7 +77,11 @@ export default function Navbar({ setShowLogin }: NavbarProps) {
       {/* Logo */}
       <Link to="/">
         <div className="text-2xl sm:text-3xl text-[#74d4ff] hover:text-red-800 transition font-extrabold">
-          GH
+          <img
+            src={logo}
+            alt="logo"
+            className="w-12 sm:w-16 md:w-20 lg:w-24 xl:w-28 object-contain"
+          />
         </div>
       </Link>
 

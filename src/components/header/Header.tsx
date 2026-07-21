@@ -1,6 +1,6 @@
 export default function Header() {
 	return (
-		<div className="relative h-[50vh] sm:h-[50vh] md:h-[40vw] lg:h-[34vw] my-7.5 mx-auto bg-no-repeat bg-cover bg-center header-img overflow-hidden">
+		<div className="relative h-[50vh] sm:h-[50vh] md:h-[40vw] lg:h-[34vw] my-7.5 mx-auto bg-no-repeat bg-cover bg-center header-img overflow-hidden rounded-lg">
 			{/* Dark overlay for better text visibility */}
 			<div className="absolute inset-0 bg-black/40 md:bg-black/30" />
 
