@@ -1,16 +1,25 @@
 # Game Hub - Full Stack E-Commerce Platform
 
-![Game Hub Banner](/src/assets/games-1.png)
+![Game Hub Banner](/src/assets/home-1.png)
+
+## 🌐 Live Demo
+
+**Website**: [game-hub](https://game-hub-mu-topaz-77.vercel.app/)
+
+> **⚠️ Note**: If the games aren't showing up, please use a VPN to access the content.
 
 ## 🔗 Repository Links
 
 ### Main Project
+
 - **Frontend Repository**: [https://github.com/esrafil418/game-hub](https://github.com/esrafil418/game-hub)
 
 ### Backend
+
 - **Backend Repository**: [https://github.com/esrafil418/game-hub_backend](https://github.com/esrafil418/game-hub_backend)
 
 ### Admin Panel
+
 - **Admin Panel Repository**: [https://github.com/esrafil418/game-hub_admin-panel](https://github.com/esrafil418/game-hub_admin-panel)
 
 ---
@@ -38,31 +47,33 @@
 ## 🚀 Tech Stack
 
 ### Frontend
-| Technology | Purpose |
-|------------|---------|
-| **React 19** | UI Library |
-| **TypeScript** | Type Safety |
-| **Tailwind CSS 4** | Styling |
-| **React Router DOM 7** | Routing |
-| **Axios** | HTTP Client |
-| **Lucide React** | Icons |
-| **Vite** | Build Tool |
+
+| Technology             | Purpose     |
+| ---------------------- | ----------- |
+| **React 19**           | UI Library  |
+| **TypeScript**         | Type Safety |
+| **Tailwind CSS 4**     | Styling     |
+| **React Router DOM 7** | Routing     |
+| **Axios**              | HTTP Client |
+| **Lucide React**       | Icons       |
+| **Vite**               | Build Tool  |
 
 ### Backend
-| Technology | Purpose |
-|------------|---------|
-| **Node.js** | Runtime |
-| **Express 5** | Web Framework |
-| **MongoDB** | Database |
-| **Mongoose** | ODM |
-| **JWT** | Authentication |
-| **Bcrypt** | Password Hashing |
-| **Multer** | File Upload |
-| **Stripe** | Payment Processing |
+
+| Technology    | Purpose            |
+| ------------- | ------------------ |
+| **Node.js**   | Runtime            |
+| **Express 5** | Web Framework      |
+| **MongoDB**   | Database           |
+| **Mongoose**  | ODM                |
+| **JWT**       | Authentication     |
+| **Bcrypt**    | Password Hashing   |
+| **Multer**    | File Upload        |
+| **Stripe**    | Payment Processing |
 
 ---
 
-![Home Page](/src/assets/home-1.png)
+![Home Page](/src/assets/games-1.png)
 
 ---
 
