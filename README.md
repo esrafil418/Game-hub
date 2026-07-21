@@ -62,7 +62,7 @@
 
 ---
 
-![Home Page](/src/assets/home-page.png)
+![Home Page](/src/assets/home-1.png)
 
 ---
 
@@ -98,23 +98,11 @@ cd game-hub
 - JWT_SECRET=your_jwt_secret_key
 - STRIPE_SECRET_KEY=your_stripe_secret_key
 
----
-
-![Shopping Cart](/src/assets/mobile-1.png)
-
----
-
 ![Shopping Cart](/src/assets/mobile-2.png)
 
 ---
 
 ![Shopping Cart](/src/assets/mobile-cart-min.png)
-
----
-
-![Mobile Page](/src/assets/mobile-header.png)
-
----
 
 ![Sign Up](/src/assets/signup.png)
 
