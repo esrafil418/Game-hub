@@ -1,6 +1,6 @@
 # Game Hub - Full Stack E-Commerce Platform
 
-![Game Hub Banner](/src/assets/games.png)
+![Game Hub Banner](/src/assets/games-1.png)
 
 ## 🔗 Repository Links
 
@@ -76,7 +76,7 @@ The application implements a secure authentication system using **JWT (JSON Web 
 
 ## 🛠️ Installation & Setup
 
-### Prerequisites:
+### Prerequisites
 
 - Node.js (v18 or higher)
 - MongoDB (local or Atlas)
@@ -91,12 +91,20 @@ cd game-hub
 
 ---
 
-## Environment Variables:
+## Environment Variables
 
 - PORT=4000
 - MONGO_URI=your_mongodb_connection_string
 - JWT_SECRET=your_jwt_secret_key
 - STRIPE_SECRET_KEY=your_stripe_secret_key
+
+---
+
+![Shopping Cart](/src/assets/mobile-1.png)
+
+---
+
+![Shopping Cart](/src/assets/mobile-2.png)
 
 ---
 

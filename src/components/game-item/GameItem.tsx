@@ -3,10 +3,10 @@ import { useState } from "react";
 
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import {
-  addToCartAsync,
-  addToCartLocal,
-  removeFromCartAsync,
-  removeFromCartLocal,
+	addToCartAsync,
+	addToCartLocal,
+	removeFromCartAsync,
+	removeFromCartLocal,
 } from "../../store/slices/cartSlice";
 
 import { Badge } from "../ui/badge";
