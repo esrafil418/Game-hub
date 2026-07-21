@@ -3,7 +3,7 @@
 		"tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
 		"target": "es2023",
 		"lib": [
-			"ES2023",
+			"ES2022",
 			"DOM"
 		],
 		"module": "esnext",
@@ -11,10 +11,9 @@
 			"vite/client"
 		],
 		"skipLibCheck": true,
-		"baseUrl": ".",
 		"paths": {
 			"@/*": [
-				"src/*"
+				"./src/*"
 			]
 		},
 		"moduleResolution": "bundler",
@@ -26,7 +25,10 @@
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
 		"erasableSyntaxOnly": true,
-		"noFallthroughCasesInSwitch": true
+		"noFallthroughCasesInSwitch": true,
+		"moduleSuffixes": [
+			""
+		] // Add this instead of baseUrl
 	},
 	"include": [
 		"src"
